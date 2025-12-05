@@ -25,7 +25,9 @@ io.on("connection", (socket) => {
   }
   // Nếu đã có extension → thay thế
   else {
-    logFile.write(`Replacing old extension with new connection: ${socket.id}\n`);
+    logFile.write(
+      `Replacing old extension with new connection: ${socket.id}\n`
+    );
     if (extensionSocket.connected) {
       extensionSocket.disconnect();
     }
@@ -57,7 +59,10 @@ const server = new McpServer({
   name: "youtube-controller-mcp",
   version: "0.0.1",
 });
-const logFile = fs.createWriteStream("C:/Users/BaoBao/Desktop/youtube-controller/mcp/search_youtube.log", { flags: "a" });
+const logFile = fs.createWriteStream(
+  "/home/laffy/Desktop/source-code/local-youtube-controller-mcp/mcp/search_youtube.log",
+  { flags: "a" }
+);
 server.registerTool(
   "search_youtube",
   {
@@ -68,27 +73,34 @@ server.registerTool(
     }),
     outputSchema: z.object({
       success: z.boolean(),
-      data: z.array(
-        z.object({
-          title: z.string(),
-          videoId: z.string(),
-        })
-      ),
+      data: z.array(z.any()),
     }),
   },
   async ({ query }) => {
     logFile.write(`Searching YouTube for: ${query}\n`);
     if (!extensionSocket || !extensionSocket.connected) {
       return {
-        success: false,
-        data: [],
-      } as any;
+        content: [{ text: "Error: User not open browser yet", type: "text" }],
+        isError: true,
+        structuredContent: {
+          success: false,
+          data: [],
+        },
+      };
     }
     return new Promise((resolve) => {
-      extensionSocket!.emit("command", { action: "search", args: { query } }, (response: any) => {
-        logFile.write(`Search result: ${JSON.stringify(response)}\n`);
-        resolve(response as any);
-      });
+      extensionSocket!.emit(
+        "command",
+        { action: "search", args: { query } },
+        (response: any) => {
+          logFile.write(`Search result: ${JSON.stringify(response)}\n`);
+          resolve({
+            content: [{ text: JSON.stringify(response), type: "text" }],
+            isError: false,
+            structuredContent: response,
+          } as any);
+        }
+      );
     });
   }
 );
