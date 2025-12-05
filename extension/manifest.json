@@ -9,10 +9,10 @@
     "128": "icon/128.png"
   },
   "{{chrome}}.action": {
-    "default_popup": "src/popup.html"
+    "default_popup": "extension/popup.html"
   },
   "{{firefox}}.browser_action": {
-    "default_popup": "src/popup.html"
+    "default_popup": "extension/popup.html"
   },
   "permissions": [
     "tabs",
@@ -31,8 +31,8 @@
     "*://m.youtube.com/*"
   ],
   "background": {
-    "{{chrome}}.service_worker": "src/background.ts",
-    "{{firefox}}.scripts": ["src/background.ts"]
+    "{{chrome}}.service_worker": "extension/background.ts",
+    "{{firefox}}.scripts": ["extension/background.ts"]
   },
   "content_scripts": [
     {
@@ -40,7 +40,7 @@
         "*://www.youtube.com/*",
         "*://m.youtube.com/*"
       ],
-      "js": ["src/content.ts"],
+      "js": ["extension/content.ts"],
       "run_at": "document_end"
     }
   ]

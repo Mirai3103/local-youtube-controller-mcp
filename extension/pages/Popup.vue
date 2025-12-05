@@ -16,7 +16,8 @@ import {
   VideoState,
   YouTubeTab,
   GetYouTubeTabsResponse,
-} from '../types';
+} from '@shared/types';
+import { POPUP_STATE_POLL_INTERVAL } from '@shared/constants';
 
 // State
 const youtubeTabs = ref<YouTubeTab[]>([]);
@@ -179,7 +180,7 @@ const { pause: pauseUpdates, resume: resumeUpdates } = useIntervalFn(
   async () => {
     await fetchVideoState();
   },
-  500,
+  POPUP_STATE_POLL_INTERVAL,
   { immediate: false }
 );
 
