@@ -1,0 +1,30 @@
+{
+  "name": "youtube-controller",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "server": "bun run mcp/index.ts"
+  },
+  "dependencies": {
+    "@vueuse/core": "^14.1.0",
+    "lucide-vue-next": "^0.555.0",
+    "reka-ui": "^2.6.1",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
+    "vue": "^3.3"
+  },
+  "devDependencies": {
+    "@socket.io/bun-engine": "^0.1.0",
+    "@types/webextension-polyfill": "^0.10.0",
+    "@vitejs/plugin-vue": "^4.5.0",
+    "typescript": "~5.6.3",
+    "unocss": "^66.5.10",
+    "vite": "^5.0.0",
+    "vite-plugin-web-extension": "^4.0.0",
+    "vue-tsc": "^1.2.0",
+    "webextension-polyfill": "^0.10.0"
+  }
+}
