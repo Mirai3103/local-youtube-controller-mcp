@@ -1,16 +1,17 @@
-import type { PlaybackAction } from './commands';
+import type { PlaybackAction } from "./commands";
 
 // Message types for extension communication
 export enum MessageType {
-  GET_YOUTUBE_TABS = 'GET_YOUTUBE_TABS',
-  GET_VIDEO_STATE = 'GET_VIDEO_STATE',
-  CONTROL_PLAYBACK = 'CONTROL_PLAYBACK',
-  SEEK_TO = 'SEEK_TO',
-  OPEN_YOUTUBE = 'OPEN_YOUTUBE',
-  SEARCH_YOUTUBE = 'SEARCH_YOUTUBE',
+  GET_YOUTUBE_TABS = "GET_YOUTUBE_TABS",
+  GET_VIDEO_STATE = "GET_VIDEO_STATE",
+  CONTROL_PLAYBACK = "CONTROL_PLAYBACK",
+  SEEK_TO = "SEEK_TO",
+  OPEN_YOUTUBE = "OPEN_YOUTUBE",
+  SEARCH_YOUTUBE = "SEARCH_YOUTUBE",
   // VIDEO_STATE_UPDATE = 'VIDEO_STATE_UPDATE',
-  GET_SEARCH_RESULT = 'GET_SEARCH_RESULT',
-  DO_SEARCH_ACTION = 'DO_SEARCH_ACTION',
+  GET_SEARCH_RESULT = "GET_SEARCH_RESULT",
+  DO_SEARCH_ACTION = "DO_SEARCH_ACTION",
+  CLICK_SEARCH_BY_ID = "CLICK_SEARCH_BY_ID",
 }
 
 // Base message interface
@@ -49,4 +50,3 @@ export interface GetSearchResultMessage extends Message {
     query: string;
   };
 }
-

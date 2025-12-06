@@ -1,22 +1,18 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "ESNext",
-    "moduleResolution": "Node",
+    "module": "esnext", // Changed from "node16"
+    "moduleResolution": "bundler", // Changed from "node16". Use "node" if "bundler" causes an error.
 
     "outDir": "dist",
-    "noEmit": false,
-
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-
     "baseUrl": "..",
     "paths": {
       "@shared/*": ["shared/*"]
     }
   },
-
   "include": ["./**/*.ts"]
 }

@@ -1,8 +1,12 @@
-import browser from 'webextension-polyfill';
-import { MessageType, PlaybackAction } from '@shared/types';
-import { controlPlayback, seekTo } from '../services/player-controller';
-import { getVideoState } from '../services/video-state';
-import { doSearchAction, getSearchResult } from '../services/search-scraper';
+import browser from "webextension-polyfill";
+import { MessageType, PlaybackAction } from "@shared/types";
+import { controlPlayback, seekTo } from "../services/player-controller";
+import { getVideoState } from "../services/video-state";
+import {
+  clickResultHasId,
+  doSearchAction,
+  getSearchResult,
+} from "../services/search-scraper";
 
 interface ContentMessage {
   type: MessageType;
@@ -10,6 +14,7 @@ interface ContentMessage {
     action?: PlaybackAction;
     query?: string;
     time?: number;
+    videoId?: string;
   };
 }
 
@@ -17,7 +22,7 @@ interface ContentMessage {
  * Handle messages from background script
  */
 async function handleMessage(message: ContentMessage): Promise<unknown> {
-  console.log('Content script received message:', message);
+  console.log("Content script received message:", message);
 
   switch (message.type) {
     case MessageType.GET_VIDEO_STATE:
@@ -43,10 +48,13 @@ async function handleMessage(message: ContentMessage): Promise<unknown> {
     case MessageType.GET_SEARCH_RESULT:
       return getSearchResult();
     case MessageType.DO_SEARCH_ACTION:
-      console.log('Doing search action:', message);
-      await  doSearchAction(message.payload?.query as string);
+      console.log("Doing search action:", message);
+      await doSearchAction(message.payload?.query as string);
       return Promise.resolve(null);
-
+    case MessageType.CLICK_SEARCH_BY_ID:
+      console.log("Clicking search result by ID:", message);
+      await clickResultHasId(message.payload?.videoId as string);
+      return Promise.resolve(null);
     default:
       return Promise.resolve(null);
   }
@@ -59,12 +67,14 @@ export function setupMessageHandler(): void {
   browser.runtime.onMessage.addListener(async (message: unknown) => {
     try {
       const result = await handleMessage(message as ContentMessage);
-      console.log('Content script sent message:', result);
+      console.log("Content script sent message:", result);
       return result as any;
     } catch (error) {
-      console.error('Error handling message:', error);
-      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+      console.error("Error handling message:", error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "Unknown error",
+      };
     }
   });
 }
-

@@ -1,16 +1,16 @@
-import browser from 'webextension-polyfill';
+import browser from "webextension-polyfill";
 import {
   GetYouTubeTabsResponse,
   YouTubeTab,
   GetSearchResultResponse,
   MessageType as MT,
-} from '@shared/types';
+} from "@shared/types";
 import {
   YOUTUBE_BASE_URL,
   YOUTUBE_SEARCH_URL,
   TAB_LOAD_DELAY,
-} from '@shared/constants';
-import { delay, isYouTubeTab, isWatchingVideo } from '../utils/helpers';
+} from "@shared/constants";
+import { delay, isYouTubeTab, isWatchingVideo } from "../utils/helpers";
 
 /**
  * Get all YouTube tabs and find the active one
@@ -21,7 +21,7 @@ export async function getYouTubeTabs(): Promise<GetYouTubeTabsResponse> {
     .filter((tab) => tab.url && isYouTubeTab(tab.url))
     .map((tab) => ({
       id: tab.id!,
-      title: tab.title || 'YouTube',
+      title: tab.title || "YouTube",
       url: tab.url!,
     }));
 
@@ -94,7 +94,9 @@ export async function searchYouTube(
     await delay(1000);
     console.debug("[searchYouTube] Delay after triggering search done");
   } else {
-    console.debug("[searchYouTube] No existing YouTube tab. Creating new one...");
+    console.debug(
+      "[searchYouTube] No existing YouTube tab. Creating new one..."
+    );
     const newTab = await browser.tabs.create({ url: searchUrl });
 
     targetTabId = newTab.id!;
@@ -119,19 +121,20 @@ export async function searchYouTube(
   return result;
 }
 
-
 /**
  * Send message to a specific tab
  */
-export async function sendMessageToTab(tabId: number, message: unknown): Promise<unknown> {
+export async function sendMessageToTab(
+  tabId: number,
+  message: unknown
+): Promise<unknown> {
   try {
     return await browser.tabs.sendMessage(tabId, message);
   } catch (error) {
-    console.error('Error sending message to tab:', error);
+    console.error("Error sending message to tab:", error);
     return null;
   }
 }
-
 
 /**
  * Play a video by ID
@@ -141,10 +144,19 @@ export async function playVideoId(videoId: string): Promise<void> {
   let targetTabId: number;
   if (tabs.length > 0) {
     targetTabId = tabs[0].id;
-    const url = `${YOUTUBE_BASE_URL}/watch?v=${videoId}`;
-    await browser.tabs.update(targetTabId, { url });
-  }else{
-    const newTab = await browser.tabs.create({ url: `${YOUTUBE_BASE_URL}/watch?v=${videoId}` });
+    await browser.tabs.sendMessage(targetTabId, {
+      type: MT.DO_SEARCH_ACTION,
+      payload: { query: videoId },
+    });
+    await delay(2000);
+    await browser.tabs.sendMessage(targetTabId, {
+      type: MT.CLICK_SEARCH_BY_ID,
+      payload: { videoId },
+    });
+  } else {
+    const newTab = await browser.tabs.create({
+      url: `${YOUTUBE_BASE_URL}/watch?v=${videoId}`,
+    });
     targetTabId = newTab.id!;
   }
   // forcus on the tab
