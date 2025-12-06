@@ -97,6 +97,7 @@ export async function handleBackendCommand(
 
     case BackendCommandType.SEARCH:
       if (!args?.query) throw new Error("Query parameter required");
+      console.debug("[handleBackendCommand] Searching YouTube for:", args.query);
       const searchResult = await searchYouTube(
         args.query as string,
         MT.GET_SEARCH_RESULT

@@ -6,7 +6,7 @@
  * - MCP server for AI tool integration
  */
 
-import { socketServerHandler } from './server/socket-server';
+import { startSocketServer } from './server/socket-server';
 import { mcpServer, startMcpServer } from './server/mcp-server';
 import { registerAllTools } from './tools';
 import { logger } from './utils/logger';
@@ -20,4 +20,4 @@ startMcpServer().then(() => {
 });
 
 // Export Bun server handler for Socket.io
-export default socketServerHandler;
+startSocketServer()

@@ -10,7 +10,7 @@ import {
   YOUTUBE_SEARCH_URL,
   TAB_LOAD_DELAY,
 } from '@shared/constants';
-import { delay, waitForTabComplete, isYouTubeTab, isWatchingVideo } from '../utils/helpers';
+import { delay, isYouTubeTab, isWatchingVideo } from '../utils/helpers';
 
 /**
  * Get all YouTube tabs and find the active one
@@ -70,32 +70,55 @@ export async function searchYouTube(
   query: string,
   messageType: MT
 ): Promise<GetSearchResultResponse> {
+  console.debug("[searchYouTube] Start search:", query);
+
   const searchUrl = `${YOUTUBE_SEARCH_URL}${encodeURIComponent(query)}`;
+  console.debug("[searchYouTube] Computed searchUrl:", searchUrl);
 
   // Try to find an existing YouTube tab and navigate it
   const { tabs } = await getYouTubeTabs();
+  console.debug("[searchYouTube] getYouTubeTabs result:", tabs);
+
   let targetTabId: number;
 
   if (tabs.length > 0) {
-    targetTabId = tabs[0].id;
+    targetTabId = tabs[0].id!;
+    console.debug("[searchYouTube] Reusing existing tab:", targetTabId);
+
     await browser.tabs.sendMessage(targetTabId, {
       type: MT.DO_SEARCH_ACTION,
       payload: { query },
     });
+    console.debug("[searchYouTube] Sent DO_SEARCH_ACTION to tab:", targetTabId);
+
     await delay(1000);
+    console.debug("[searchYouTube] Delay after triggering search done");
   } else {
+    console.debug("[searchYouTube] No existing YouTube tab. Creating new one...");
     const newTab = await browser.tabs.create({ url: searchUrl });
+
     targetTabId = newTab.id!;
+    console.debug("[searchYouTube] Created new tab:", targetTabId);
   }
 
-  await waitForTabComplete(targetTabId);
-  await delay(TAB_LOAD_DELAY);
+  console.debug("[searchYouTube] Waiting for tab to complete:", targetTabId);
+  await delay(1000);
+  console.debug("[searchYouTube] Tab reported complete:", targetTabId);
 
-  return (await browser.tabs.sendMessage(targetTabId, {
+  await delay(TAB_LOAD_DELAY);
+  console.debug("[searchYouTube] Final post-load delay done");
+
+  console.debug("[searchYouTube] Requesting GET_SEARCH_RESULT…");
+  const result = await browser.tabs.sendMessage(targetTabId, {
     type: MT.GET_SEARCH_RESULT,
     payload: { query },
-  }));
+  });
+
+  console.debug("[searchYouTube] Received result:", result);
+
+  return result;
 }
+
 
 /**
  * Send message to a specific tab

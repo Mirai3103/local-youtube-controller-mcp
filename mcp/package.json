@@ -1,15 +1,16 @@
 {
-  "name": "mcp",
-  "module": "index.ts",
+  "name": "local-ytb-controller-mcp",
   "type": "module",
-  "private": true,
+  "private": false,
   "scripts": {
     "start": "bun run index.ts",
-    "build": "bun build ./index.ts --outdir ./build --target bun"
+    "build": "bun build ./index.ts --outdir ./build --target node"
   },
   "bin": {
-    "youtube-controller-mcp": "./build/index.js"
+    "youtube-controller-mcp": "build/index.js"
   },
+  "main": "./build/index.js",
+  "module": "./build/index.js",
   "devDependencies": {
     "@types/bun": "latest",
     "@types/node": "^24.10.1"
@@ -22,5 +23,6 @@
     "@socket.io/bun-engine": "^0.1.0",
     "socket.io": "^4.8.1",
     "zod": "^4.1.13"
-  }
+  },
+  "version": "0.0.3"
 }

@@ -37,10 +37,10 @@ function handlePopupMessage(message: PopupMessage): Promise<unknown> | undefined
       }
       return Promise.resolve(null);
 
-    case MessageType.VIDEO_STATE_UPDATE:
-      // Forward video state updates to backend server
-      emitVideoStateUpdate(message.payload);
-      return Promise.resolve(null);
+    // case MessageType.VIDEO_STATE_UPDATE:
+    //   // Forward video state updates to backend server
+    //   emitVideoStateUpdate(message.payload);
+    //   return Promise.resolve(null);
 
     default:
       return Promise.resolve(null);

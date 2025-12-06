@@ -35,7 +35,7 @@ export function emitVideoStateUpdate(state: unknown): void {
  * Initialize socket client and connect to MCP server
  */
 export function initSocketClient(
-  onCommand: (command: BackendCommand, callback: (response: BackendResponse) => void) => void
+  onCommand: (command: BackendCommand, callback: (response: BackendResponse) => void) => Promise<void>
 ): void {
   socket = io(`http://localhost:${SOCKET_PORT}`, {
     transports: ['websocket'],
@@ -46,6 +46,7 @@ export function initSocketClient(
 
   socket.on('connect', () => {
     console.log('✅ Connected to backend server');
+  
   });
 
   socket.on('disconnect', () => {
@@ -55,11 +56,11 @@ export function initSocketClient(
   socket.on('error', (error) => {
     console.error('Socket error:', error);
   });
-
-  // Handle commands from backend
-  socket.on('command', async (command: BackendCommand, callback: (response: BackendResponse) => void) => {
-    console.log('📥 Received command from backend:', command);
-    onCommand(command, callback);
+  socket!.on('command', async (command: BackendCommand, callback: (response: BackendResponse) => void) => {
+    console.log('📥 Received command from backend:', command,onCommand);
+    await onCommand(command, callback);
   });
+  // Handle commands from backend
+ 
 }
 

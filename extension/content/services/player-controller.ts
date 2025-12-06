@@ -54,19 +54,19 @@ export function seekTo(time: number): void {
  * Start sending periodic state updates when video is playing
  */
 function startStateUpdates(): void {
-  if (updateInterval) {
-    clearInterval(updateInterval);
-  }
+  // if (updateInterval) {
+  //   clearInterval(updateInterval);
+  // }
 
-  updateInterval = window.setInterval(() => {
-    const state = getVideoState();
-    if (state && state.isPlaying) {
-      browser.runtime.sendMessage({
-        type: MessageType.VIDEO_STATE_UPDATE,
-        payload: state,
-      });
-    }
-  }, VIDEO_STATE_UPDATE_INTERVAL);
+  // updateInterval = window.setInterval(() => {
+  //   const state = getVideoState();
+  //   if (state && state.isPlaying) {
+  //     browser.runtime.sendMessage({
+  //       type: MessageType.VIDEO_STATE_UPDATE,
+  //       payload: state,
+  //     });
+  //   }
+  // }, VIDEO_STATE_UPDATE_INTERVAL);
 }
 
 /**

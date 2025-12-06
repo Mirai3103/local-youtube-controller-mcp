@@ -1,4 +1,4 @@
-import { Server as Engine } from '@socket.io/bun-engine';
+import http from 'http';
 import { Server } from 'socket.io';
 import type {
   ServerToClientEvents,
@@ -10,17 +10,18 @@ import { config } from '../config';
 import { logger } from '../utils/logger';
 import { extensionBridge } from '../services/extension-bridge';
 
-// Create Socket.io server with typed events
+// Tạo HTTP server thuần Node
+const httpServer = http.createServer();
+
+// Tạo Socket.io server
 const io = new Server<
   ClientToServerEvents,
   ServerToClientEvents,
   InterServerEvents,
   SocketData
->();
-
-const engine = new Engine({ path: config.socketPath });
-
-io.bind(engine);
+>(httpServer, {
+  path: config.socketPath,
+});
 
 // Handle connections
 io.on('connection', (socket) => {
@@ -29,15 +30,14 @@ io.on('connection', (socket) => {
   // Register this socket as the extension
   extensionBridge.setSocket(socket);
 
-  // Handle disconnect
   socket.on('disconnect', () => {
     extensionBridge.clearSocket(socket);
   });
 });
 
-// Export for Bun server
-export const socketServerHandler = {
-  port: config.port,
-  ...engine.handler(),
+// Export function để start server
+export const startSocketServer = () => {
+  httpServer.listen(config.port, () => {
+    logger.info(`Socket server running on port ${config.port}`);
+  });
 };
-

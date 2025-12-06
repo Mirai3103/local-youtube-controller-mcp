@@ -206,9 +206,7 @@ onUnmounted(() => {
     <div v-else class="controller-content">
       <!-- No YouTube Tab -->
       <div v-if="!hasYouTubeTabs" class="no-tab-container">
-        <img src="/icon-with-shadow.svg" class="logo" alt="YouTube Controller" />
-        <h2>No YouTube Tab Found</h2>
-        <p>Open a YouTube video to start controlling playback</p>
+   
         <button @click="openYouTube" class="open-youtube-btn">
           <ExternalLink :size="20" />
           Open YouTube
@@ -218,10 +216,7 @@ onUnmounted(() => {
       <!-- Has YouTube Tab -->
       <div v-else class="has-tab-container">
         <!-- Header -->
-        <div class="header">
-          <img src="/icon-with-shadow.svg" class="header-logo" alt="YouTube Controller" />
-          <h1>YouTube Controller</h1>
-        </div>
+       
 
         <!-- Tab Selector (if multiple tabs) -->
         <div v-if="youtubeTabs.length > 1" class="tab-selector">

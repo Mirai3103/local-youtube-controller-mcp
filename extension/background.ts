@@ -15,6 +15,7 @@ console.log('YouTube Controller - Background script loaded');
 // Initialize socket connection to MCP server
 initSocketClient(async (command, callback) => {
   try {
+    console.debug("Calling handleBackendCommand");
     const response = await handleBackendCommand(command);
     callback(response);
   } catch (error) {
