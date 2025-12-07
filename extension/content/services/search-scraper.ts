@@ -77,9 +77,7 @@ export async function doSearchAction(query: string): Promise<void> {
 export async function clickResultHasId(videoId: string): Promise<void> {
   console.log("Clicking search result with videoId:", videoId);
   await waitForSelectorExists(
-    `
-      "ytd-video-renderer.style-scope.ytd-item-section-renderer"
-    `,
+    "ytd-video-renderer.style-scope.ytd-item-section-renderer",
     SEARCH_RESULT_TIMEOUT
   );
   const resultLink = document.querySelector(
